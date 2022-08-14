@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 var fn = flag.String("f", "input.json", "输入input.json")
@@ -45,18 +46,24 @@ func main() {
 
 			//构建第1列
 		}
-		fmt.Printf("%v\n, totalSize: %v", outData, totalSize)
+		fmt.Printf("%v\n, totalSize: %v\n", outData, totalSize)
 
 		var idxArr = make([]int, len(dv))
 
-		for j := len(outData); j < totalSize; {
+		var turn = 0
+		for j := len(outData); j < 2*totalSize; {
 
-			x := generateElement(dv, &idxArr)
-			fmt.Printf("outData = %v, x = %v\n", outData, x)
-			//	if !listContains(outData, x) {
+			if turn > len(dv) {
+				turn = -1
+			}
+			x := generateElement(dv, &idxArr, &turn)
+			//fmt.Printf("x = %v\n", x)
+			//if !listContains(outData, x) {
 			outData = append(outData, x)
-			//	}
+			//}
 			j = len(outData)
+			turn = turn + 1
+
 			//组合穷举数组
 		}
 		fmt.Println("%v\n", outData)
@@ -88,29 +95,27 @@ func doCompare(v []string, x []string) bool {
 	return false
 }
 
-func generateElement(dv [][]string, idx *[]int) []string {
+func generateElement(dv [][]string, idx *[]int, turn *int) []string {
 
 	var outString []string
 
+	var idxStr = ""
 	for i := 0; i < len(dv); i++ {
-		value, nextInt := generateValue(dv[i], (*idx)[i])
-		(*idx)[i] = nextInt
+		idxStr += " " + strconv.Itoa((*idx)[i])
+		value := generateValue(dv[i], (*idx)[i])
+		if *turn == i {
+			(*idx)[i] += 1
+			if (*idx)[i] >= len(dv[i]) {
+				(*idx)[i] = 0
+			}
+		}
 		outString = append(outString, value)
 	}
+	fmt.Printf("idxStr: %v\n", idxStr)
 	return outString
 }
 
-func generateValue(strings []string, idx int) (string, int) {
-	nowIdx := idx
-	var nextInt int
-	fmt.Printf("%v, idx: %v\n", strings, idx)
-	if nowIdx >= len(strings) {
-		nextInt = 0
-	} else {
-		nextInt = nowIdx + 1
-	}
-	if nowIdx >= len(strings) {
-		nowIdx -= 1
-	}
-	return strings[nowIdx], nextInt
+func generateValue(strings []string, idx int) string {
+
+	return strings[idx]
 }
