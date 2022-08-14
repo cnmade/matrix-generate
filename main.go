@@ -39,9 +39,6 @@ func main() {
 
 			if i == 0 {
 				totalSize = len(d0)
-				for _, v := range d0 {
-					outData = append(outData, []string{v})
-				}
 			} else {
 				totalSize = totalSize * len(dv[i])
 			}
@@ -49,11 +46,71 @@ func main() {
 			//构建第1列
 		}
 		fmt.Printf("%v\n, totalSize: %v", outData, totalSize)
-		for j := 0; j < totalSize; j++ {
+
+		var idxArr = make([]int, len(dv))
+
+		for j := len(outData); j < totalSize; {
+
+			x := generateElement(dv, &idxArr)
+			fmt.Printf("outData = %v, x = %v\n", outData, x)
+			//	if !listContains(outData, x) {
+			outData = append(outData, x)
+			//	}
+			j = len(outData)
 			//组合穷举数组
 		}
+		fmt.Println("%v\n", outData)
 	} else {
 
 		flag.Usage()
 	}
+}
+
+func listContains(data [][]string, x []string) bool {
+	if len(data) == 0 {
+		return false
+	}
+	for _, v := range data {
+		if doCompare(v, x) {
+			return true
+		}
+	}
+	return false
+}
+
+func doCompare(v []string, x []string) bool {
+	s, _ := json.Marshal(v)
+	z, _ := json.Marshal(x)
+	fmt.Printf(" s: %v, z: %v \n", string(s), string(z))
+	if string(s) == string(z) {
+		return true
+	}
+	return false
+}
+
+func generateElement(dv [][]string, idx *[]int) []string {
+
+	var outString []string
+
+	for i := 0; i < len(dv); i++ {
+		value, nextInt := generateValue(dv[i], (*idx)[i])
+		(*idx)[i] = nextInt
+		outString = append(outString, value)
+	}
+	return outString
+}
+
+func generateValue(strings []string, idx int) (string, int) {
+	nowIdx := idx
+	var nextInt int
+	fmt.Printf("%v, idx: %v\n", strings, idx)
+	if nowIdx >= len(strings) {
+		nextInt = 0
+	} else {
+		nextInt = nowIdx + 1
+	}
+	if nowIdx >= len(strings) {
+		nowIdx -= 1
+	}
+	return strings[nowIdx], nextInt
 }
