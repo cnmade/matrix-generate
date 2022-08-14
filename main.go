@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"os"
 )
 
@@ -23,20 +24,21 @@ func main() {
 			panic("解析文件失败")
 		}
 
-		var outData = make([][]string, 0)
+		var outData [][]string
 
-		for i := 0; i < len(dv); i++ {
+		matrixLen := len(dv)
+		for i := 0; i < matrixLen; i++ {
 			//d0 就是一串串的字符
 			var d0 = dv[i]
-			for _, v := range d0 {
-				if outData[i] == nil {
-					tmpOd := make([]string, 0)
-					outData[i] = tmpOd
+
+			if i == 0 {
+				for _, v := range d0 {
+					outData = append(outData, []string{v})
 				}
-				outData[i] = append(outData[i], v)
 			}
 			//构建第1列
 		}
+		fmt.Printf("%v\n", outData)
 	} else {
 
 		flag.Usage()
