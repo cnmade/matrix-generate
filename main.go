@@ -27,18 +27,31 @@ func main() {
 		var outData [][]string
 
 		matrixLen := len(dv)
+
+		// 输出的新二维数组，每个Element是固定长度的，长度等于  dv len, 比如4列
+
+		// 但是这个 总的 数量，等于 第一列size 乘以第二列size 乘 第三列size 乘以 第四列size
+
+		totalSize := 0
 		for i := 0; i < matrixLen; i++ {
 			//d0 就是一串串的字符
 			var d0 = dv[i]
 
 			if i == 0 {
+				totalSize = len(d0)
 				for _, v := range d0 {
 					outData = append(outData, []string{v})
 				}
+			} else {
+				totalSize = totalSize * len(dv[i])
 			}
+
 			//构建第1列
 		}
-		fmt.Printf("%v\n", outData)
+		fmt.Printf("%v\n, totalSize: %v", outData, totalSize)
+		for j := 0; j < totalSize; j++ {
+			//组合穷举数组
+		}
 	} else {
 
 		flag.Usage()
